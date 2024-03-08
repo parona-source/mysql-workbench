@@ -23,11 +23,6 @@
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic ignored "-Wclass-memaccess"
 #endif
-#if defined(__APPLE__) || defined (_WIN32)
-#include <unordered_map>
-#else
-#include <tr1/unordered_map>
-#endif
 
 #define MYSQL_LEX 1
 #define MYSQL_SERVER
@@ -48,6 +43,7 @@
 #include <m_ctype.h>
 #include "myx_lex_helpers.h"
 //#include <hash.h>
+#include <unordered_map>
 
 namespace mysql_parser
 {
@@ -117,11 +113,7 @@ namespace mysql_parser
 
 static inline SYMBOL *get_hash_symbol(const char *s, unsigned int len, bool function)
 {
-#if defined(__APPLE__) || defined(_MSC_VER)
   typedef std::unordered_multimap<size_t, SYMBOL *> Hash_ind;
-#else
-  typedef std::tr1::unordered_multimap<size_t, SYMBOL *> Hash_ind;
-#endif
   typedef std::pair<Hash_ind::const_iterator, Hash_ind::const_iterator> Hash_ind_range;
   static Hash_ind sym_hash_ind;
   static Hash_ind::const_iterator sym_hash_ind_end;
